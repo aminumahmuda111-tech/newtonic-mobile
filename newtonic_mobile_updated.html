@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newtonic Mobile | Phone Accessories</title>
+<style>
+:root{--purple:#7028e4;--pink:#ff4fa3;--orange:#ff9f1c;--dark:#211735;--light:#f8f5ff}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--light);color:var(--dark)}
+header{background:linear-gradient(120deg,#7028e4,#e83e8c);color:white;padding:18px 5%}
+nav{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{font-size:21px;font-weight:900}.logo span{color:#ffdb65}
+nav button,.btn{border:0;border-radius:25px;padding:11px 16px;cursor:pointer;font-weight:bold}
+.cart-button{background:white;color:var(--purple)}
+.hero{padding:48px 5% 55px;background:linear-gradient(130deg,#7028e4,#ed4c9b,#ff9f1c);color:white}
+.hero h1{font-size:clamp(32px,7vw,55px);margin:0 0 14px}
+.hero p{line-height:1.7;max-width:480px}
+.hero .btn{background:#ffdf68;color:#382052}
+main{padding:28px 5%}
+.search{width:100%;padding:15px;border:2px solid #e5d7ff;border-radius:14px;font-size:16px;outline-color:var(--purple)}
+.filters{display:flex;gap:9px;overflow-x:auto;padding:17px 0}
+.filters button{flex-shrink:0;border:1px solid #e3d8f5;background:white;color:var(--dark);padding:10px 15px;border-radius:22px;cursor:pointer}
+.filters button.active{background:var(--purple);color:white}
+.section-title{margin:18px 0;font-size:25px}
+.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.product{background:white;border-radius:18px;overflow:hidden;box-shadow:0 4px 16px #38205212;transition:transform .2s}
+.product:hover{transform:translateY(-4px)}
+.product-art{height:155px;position:relative;overflow:hidden;display:grid;place-items:center;background:linear-gradient(135deg,#f0e6ff,#ffe4f1)}
+.product-art img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+.product:hover .product-art img{transform:scale(1.06)}
+.product-art span{width:100%;height:100%;place-items:center;font-size:58px}
+.product-info{padding:13px}
+.product-info h3{font-size:15px;margin:0 0 8px}
+.product-info p{color:#777;font-size:12px}
+.price{font-size:18px;font-weight:900;color:var(--purple)}
+.add{width:100%;background:var(--purple);color:white;margin-top:12px;padding:11px 5px;border:0;border-radius:10px;cursor:pointer;font-weight:bold}
+.add:hover{background:#5015b8}
+.promo{margin-top:30px;border-radius:20px;padding:24px;color:white;background:linear-gradient(120deg,#ff7b36,#ff4fa3)}
+.promo h2{margin-top:0}
+footer{margin-top:35px;background:#211735;color:white;padding:28px 5%;text-align:center;line-height:1.8}
+footer a{color:#ffdb65}
+#cartPanel{position:fixed;z-index:10;right:0;top:0;height:100%;width:min(370px,100%);background:white;box-shadow:-5px 0 25px #0002;padding:22px;overflow-y:auto;display:none}
+#cartPanel.open{display:block}
+.cart-line{padding:12px 0;border-bottom:1px solid #eee}
+.cart-line button{margin:5px;padding:5px 10px;cursor:pointer}
+.cart-total{font-size:22px;font-weight:bold}
+.checkout{display:block;width:100%;padding:14px;border:0;border-radius:12px;background:#16a34a;color:white;font-weight:bold;cursor:pointer;margin-top:12px}
+.close{float:right;background:#eee;border:0;border-radius:8px;padding:9px;cursor:pointer}
+.empty{color:#777;padding:20px 0}
+@media(min-width:650px){.products{grid-template-columns:repeat(3,minmax(0,1fr))}.product-art{height:190px}}
+@media(min-width:950px){.products{grid-template-columns:repeat(4,minmax(0,1fr))}main{max-width:1200px;margin:auto}}
+</style>
+</head>
+<body>
+<header><nav>
+  <div class="logo">NEWTONIC <span>MOBILE</span></div>
+  <button class="cart-button" onclick="toggleCart(true)">🛒 Cart (<span id="cartCount">0</span>)</button>
+</nav></header>
+
+<section class="hero">
+  <h1>Upgrade Your<br>Phone Life! 📱</h1>
+  <p>Discover phone accessories that match your style. Shop cases, chargers, earbuds and more at Newtonic Mobile.</p>
+  <button class="btn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Explore Products →</button>
+</section>
+
+<main id="shop">
+  <input id="search" class="search" type="search" placeholder="🔎 Search phone accessories..." oninput="renderProducts()">
+  <div class="filters" id="filters"></div>
+  <h2 class="section-title">✨ Explore Our Products</h2>
+  <div class="products" id="products"></div>
+  <section class="promo">
+    <h2>💜 Your Phone. Your Style.</h2>
+    <p>Find accessories for your everyday life with Newtonic Mobile.</p>
+    <strong>Smart accessories. Smart choices.</strong>
+  </section>
+</main>
+
+<footer>
+  <h2>NEWTONIC MOBILE 📱</h2>
+  Your favourite phone accessories store.<br>Made with 💜 in Ghana.
+  <p>Contact us to ask about product availability and delivery.</p>
+  <small>© <span id="year"></span> Newtonic Mobile. All rights reserved.</small>
+</footer>
+
+<aside id="cartPanel">
+  <button class="close" onclick="toggleCart(false)">✕ Close</button>
+  <h2>🛒 Your Cart</h2>
+  <div id="cartItems"></div>
+  <p class="cart-total">Total: <span id="total">GH₵0.00</span></p>
+  <button class="checkout" onclick="checkout()">Order on WhatsApp</button>
+  <p style="font-size:12px;color:#777">Orders are requests until product availability, delivery and payment have been confirmed.</p>
+</aside>
+
+<script>
+const products = [
+{id:1,name:"Stylish Phone Case",category:"Cases",price:35,emoji:"📱",image:"https://images.unsplash.com/photo-1605236453806-6ff36851218e?auto=format&fit=crop&w=600&q=80",desc:"Everyday phone protection"},
+{id:2,name:"Screen Protector",category:"Cases",price:20,emoji:"🛡️",image:"https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=600&q=80",desc:"Screen protection"},
+{id:3,name:"Fast Charger",category:"Charging",price:65,emoji:"🔌",image:"https://images.unsplash.com/photo-1583863788434-e58a36330cf0?auto=format&fit=crop&w=600&q=80",desc:"Charging adapter"},
+{id:4,name:"USB-C Cable",category:"Charging",price:25,emoji:"🔗",image:"https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=600&q=80",desc:"Charging cable"},
+{id:5,name:"Wireless Earbuds",category:"Audio",price:120,emoji:"🎧",image:"https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=600&q=80",desc:"Wireless listening"},
+{id:6,name:"Wired Earphones",category:"Audio",price:35,emoji:"🎵",image:"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80",desc:"Everyday audio"},
+{id:7,name:"Power Bank",category:"Power",price:150,emoji:"🔋",image:"https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?auto=format&fit=crop&w=600&q=80",desc:"Portable power"},
+{id:8,name:"Phone Stand",category:"Gadgets",price:30,emoji:"📲",image:"https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?auto=format&fit=crop&w=600&q=80",desc:"Hands-free viewing"},
+{id:9,name:"Phone Holder",category:"Gadgets",price:45,emoji:"🧲",image:"https://images.unsplash.com/photo-1504274066651-8d31a536b11a?auto=format&fit=crop&w=600&q=80",desc:"Convenient phone support"},
+{id:10,name:"Smart Watch",category:"Gadgets",price:180,emoji:"⌚",image:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",desc:"Wearable gadget"},
+{id:11,name:"Bluetooth Speaker",category:"Audio",price:95,emoji:"🔊",image:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?auto=format&fit=crop&w=600&q=80",desc:"Music on the go"},
+{id:12,name:"Charging Bundle",category:"Charging",price:85,emoji:"⚡",image:"https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80",desc:"Charging accessories"}
+];
+const categories=["All","Cases","Charging","Audio","Power","Gadgets"];
+let selected="All",cart=[];
+const money=n=>"GH₵"+n.toFixed(2);
+function renderFilters(){
+ document.getElementById("filters").innerHTML=categories.map(c=>`<button class="${c===selected?'active':''}" onclick="selectCategory('${c}')">${c}</button>`).join("");
+}
+function selectCategory(c){selected=c;renderFilters();renderProducts();}
+function renderProducts(){
+ const query=document.getElementById("search").value.toLowerCase();
+ const shown=products.filter(p=>(selected==="All"||p.category===selected)&&(p.name+" "+p.category+" "+p.desc).toLowerCase().includes(query));
+ document.getElementById("products").innerHTML=shown.length?shown.map(p=>`
+ <article class="product">
+  <div class="product-art">
+   <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='grid';">
+   <span style="display:none">${p.emoji}</span>
+  </div>
+  <div class="product-info"><h3>${p.name}</h3><p>${p.desc}</p><div class="price">${money(p.price)}</div><button class="add" onclick="addToCart(${p.id})">+ Add to Cart</button></div>
+ </article>`).join(""):"<p>No products found. Try another search.</p>";
+}
+function addToCart(id){const item=cart.find(p=>p.id===id);if(item)item.qty++;else cart.push({...products.find(p=>p.id===id),qty:1});renderCart();}
+function changeQty(id,amount){const item=cart.find(p=>p.id===id);if(!item)return;item.qty+=amount;cart=cart.filter(p=>p.qty>0);renderCart();}
+function renderCart(){
+ const count=cart.reduce((sum,p)=>sum+p.qty,0),total=cart.reduce((sum,p)=>sum+p.price*p.qty,0);
+ document.getElementById("cartCount").textContent=count;document.getElementById("total").textContent=money(total);
+ document.getElementById("cartItems").innerHTML=cart.length?cart.map(p=>`<div class="cart-line"><strong>${p.emoji} ${p.name}</strong><br>${money(p.price)} each<div><button onclick="changeQty(${p.id},-1)">−</button> ${p.qty} <button onclick="changeQty(${p.id},1)">+</button></div><strong>${money(p.price*p.qty)}</strong></div>`).join(""):'<p class="empty">Your cart is empty. Add something you like!</p>';
+}
+function toggleCart(open){document.getElementById("cartPanel").classList.toggle("open",open);}
+function checkout(){
+ if(!cart.length){alert("Your cart is empty. Add a product first!");return;}
+ const whatsappNumber="233000000000";
+ if(whatsappNumber==="233000000000"){alert("To enable ordering, replace the sample WhatsApp number in the code with your own number.");return;}
+ const lines=cart.map(p=>`${p.name} x ${p.qty} = ${money(p.price*p.qty)}`).join("\n");
+ const total=cart.reduce((sum,p)=>sum+p.price*p.qty,0);
+ const message=`Hello Newtonic Mobile! I'd like to enquire about this order:\n\n${lines}\n\nTotal: ${money(total)}\nPlease confirm availability and delivery.`;
+ window.open("https://wa.me/"+whatsappNumber+"?text="+encodeURIComponent(message),"_blank");
+}
+document.getElementById("year").textContent=new Date().getFullYear();
+renderFilters();renderProducts();renderCart();
+</script>
+</body>
+</html>
